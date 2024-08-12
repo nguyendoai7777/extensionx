@@ -1,0 +1,45 @@
+<style type="text/css" rel="stylesheet/less" extenstion="less">
+  .center-all {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+
+.icon-interactive-btn {
+	background-color: transparent;
+	border: 1px solid #464646;
+	position: relative;
+	width: 48px;
+	transition: 0.2s;
+	aspect-ratio: 1/1;
+	border-radius: 50%;
+  cursor: pointer;
+	&:extend(.center-all);
+	&:hover {
+		background-color: #2b2b2b;
+	}
+	&:active {
+		background-color: #3d3d3d;
+		&:after {
+			box-shadow: 0 0 0 0 white;
+			opacity: 1;
+			transition: 0s;
+		}
+	}
+	&:after {
+		content: '';
+		display: block;
+		position: absolute;
+		border-radius: 50%;
+		inset: 0;
+		opacity: 0;
+		transition: all 0.2s;
+		box-shadow: 0 0 0 5px white;
+	}
+}
+
+</style>
+
+<button class="icon-interactive-btn">T</button>
+

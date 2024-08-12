@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			html {
+				height: 100%;
+			}
+
+			body {
+				box-sizing: border-box;
+				height: 100%;
+				margin: 0;
+			}
+
+			.container {
+				height: 100%;
+				overflow: hidden;
+				display: flex;
+			}
+
+			.container > aside {
+				flex: none;
+				width: 350px;
+				min-width: 150px;
+			}
+
+			.container > main {
+				flex: 1;
+			}
+
+			.resize-handle--x {
+				flex: none;
+				position: relative;
+				box-sizing: border-box;
+				width: 5px;
+				height: 100%;
+				cursor: col-resize;
+				border-left: 1px solid #ccc;
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				user-select: none;
+			}
+
+			.resize-handle--x:hover,
+			.resize-handle--x:active {
+				border-color: lightblue;
+				border-style: double;
+			}
+
+			/*# sourceMappingURL=style.css.map */
+		</style>
+	</head>
+
+	<body class="container" id="destination">
+		<div class="container">
+			<aside id="sidebar"></aside>
+			<div class="resize-handle--x" id="resize-handle" data-target="aside"></div>
+			<main></main>
+		</div>
+		<script>
+			const resizeData = {
+				tracking: false,
+				startCursorScreenX: null,
+				maxWidth: innerWidth - 500,
+				minWidth: 149,
+			};
+
+			document.getElementById('resize-handle').addEventListener('mousedown', (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				resizeData.startWidth = document.getElementById('sidebar').offsetWidth;
+				resizeData.startCursorScreenX = event.screenX;
+				resizeData.tracking = true;
+			});
+
+			document.addEventListener('mousemove', (event) => {
+				if (resizeData.tracking) {
+					const cursorScreenXDelta = event.screenX - resizeData.startCursorScreenX;
+					let newWidth = Math.min(resizeData.startWidth + cursorScreenXDelta, resizeData.maxWidth);
+					newWidth = Math.max(resizeData.minWidth, newWidth);
+					// document.getElementById('sidebar').style.width = event.x <= resizeData.minWidth ? 150 : event.x + 'px';
+					document.getElementById('sidebar').style.width = newWidth + 'px';
+				}
+			});
+
+			document.addEventListener('mouseup', (event) => {
+				if (resizeData.tracking) resizeData.tracking = false;
+			});
+		</script>
+	</body>
+</html>

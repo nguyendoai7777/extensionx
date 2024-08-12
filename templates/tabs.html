@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			@media (prefers-color-scheme: dark) {
+				* {
+					background: black;
+					color: white;
+				}
+				.night.dark-scheme {
+					background: black;
+					color: #ddd;
+				}
+			}
+
+			@media (prefers-color-scheme: light) {
+				* {
+					background: white;
+					color: #555;
+				}
+				.night.light-scheme {
+					background: #eee;
+					color: black;
+				}
+			}
+
+			.m-auto {
+				display: flex;
+			}
+
+			.mat-tab-header {
+				position: relative;
+				width: fit-content;
+				border: 1px solid #c1c1c159;
+				border-radius: 8px 8px 0 0;
+				overflow: hidden;
+			}
+
+			.mat-tab-root {
+				display: flex;
+			}
+
+			.mat-tab-root .mat-tab-item {
+				padding: 16px 35px;
+				cursor: pointer;
+				user-select: none;
+				transition: 0.5s;
+			}
+			.mat-tab-root .mat-tab-item.active {
+				color: deeppink;
+			}
+
+			.mat-ink-bar {
+				position: absolute;
+				height: 2px;
+				background-color: deeppink;
+				bottom: 0;
+				/* transition: 500ms cubic-bezier(0.35, 0, 0.25, 1); */
+				transition: all 500ms cubic-bezier(0.35, 0, 0.25, 1);
+			}
+
+			.tab-body {
+				border-left: 1px solid #c1c1c159;
+				border-bottom: 1px solid #c1c1c159;
+				border-right: 1px solid #c1c1c159;
+				border-radius: 0 0 8px 8px;
+				overflow: hidden;
+				padding: 10px;
+			}
+			.tab-body * {
+				background-color: unset;
+			}
+			.tab-translate {
+				display: flex;
+			}
+			.tab-body-content {
+				flex-grow: 1;
+				flex-shrink: 0;
+				flex-basis: 100%;
+				width: inherit;
+				padding: 10px;
+				min-height: 400px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div style="width: 200px; background-color: deeppink; height: 60px"></div>
+		<div class="m-auto">
+			<div class="tab-container">
+				<div class="mat-tab-group" id="group1" tabActiveIndex="2">
+					<div class="mat-tab-header">
+						<div class="mat-tab-root">
+							<div class="mat-tab-item">Home</div>
+							<div class="mat-tab-item">About</div>
+							<div class="mat-tab-item">Work</div>
+							<div class="mat-tab-item">Contact</div>
+							<div class="mat-tab-item">Production Mode</div>
+						</div>
+						<div class="mat-ink-bar"></div>
+					</div>
+					<div class="tab-body">
+						<div class="tab-translate">
+							<div class="tab-body-content">1</div>
+							<div class="tab-body-content">2</div>
+							<div class="tab-body-content">3</div>
+							<div class="tab-body-content">4</div>
+							<div class="tab-body-content">5</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			const $ = document.querySelector.bind(document);
+			const $$ = document.querySelectorAll.bind(document);
+			const ONLY_NUMBER_REGEX = /^\d+$/;
+
+			Array.from($$('.mat-tab-group')).forEach((root, rootIndex) => {
+				let id = root.id;
+				if (!id || id === '') {
+					console.error(
+						`Reuquired id at 'mat-tab-group' class. Ex: <div class="mat-tab-group id="tab1">...</div>.
+        Exceptions below ELement: 
+      `,
+						root
+					);
+					throw new Error('Please provide an id.');
+				}
+				id = `_${id}`;
+				root.id = id;
+				const inkBar = $(`#${id} .mat-ink-bar`);
+				const tabList = $$(`#${id} .mat-tab-item`);
+				const arrayTabList = Array.from(tabList);
+				const tabActiveIndex = root.getAttribute('tabActiveIndex');
+				const tabBodyNodes = $(`#${id} .tab-translate`);
+				const tabBodyItemNode = $$(`#${id} .tab-body-content`);
+				const arrayTabBodyItemList = Array.from(tabBodyItemNode);
+
+				if (arrayTabList.length < 2) {
+					console.error(
+						`When use Tabs view, you must provide more than one tab item, Exceptions at:
+    `,
+						root
+					);
+					return;
+				}
+
+				let tabActive = 0;
+				if (!tabActiveIndex) {
+					console.warn(
+						` It looks like you haven't provided tabActiveIndex yet, so tabActiveIndex will be set by 0 as default.
+  This below element is not set tabActiveIndex: 
+`,
+						root
+					);
+					tabActive = 0;
+				} else {
+					const matching = ONLY_NUMBER_REGEX.test(tabActiveIndex);
+					if (matching) {
+						tabActive = +tabActiveIndex;
+					} else {
+						const more = tabList.length > 1 ? 's' : '';
+						console.warn(
+							`Invalid tabActiveIndex, you have ${tabList.length} tab item${more}, active index will be from 0 -> ${tabList.length - 1}.
+  Because of that, 0 is set as default.`,
+							root
+						);
+					}
+				}
+				const setStyleForInkBar = ({ left, width }) => {
+					inkBar.style.width = width + 'px';
+					inkBar.style.left = left + 'px';
+				};
+				const setActiveDefault = (order) => {
+					inkBar.style.width = tabList[order].getBoundingClientRect().width + 'px';
+					inkBar.style.left = arrayTabList[order].offsetLeft + 'px';
+					arrayTabList[order].classList.add('active');
+					const offsetLeft = arrayTabBodyItemList[order].offsetLeft;
+					tabBodyNodes.style.transform = `translateX(-${offsetLeft}px)`;
+					const tTransition = setTimeout(() => {
+						tabBodyNodes.style.transition = `.3s`;
+						clearTimeout(tTransition);
+					}, 500);
+				};
+				setActiveDefault(tabActive);
+				let previosTabIndex = tabActive;
+				const onTabChange = (parentId, tabId, tabName) => {
+					const translateSpacing = arrayTabBodyItemList[tabActive].getBoundingClientRect().width * tabId;
+					let translateParam = '';
+					translateParam = `-${translateSpacing}px`;
+					tabBodyNodes.style.transform = `translateX(${translateParam})`;
+					previosTabIndex = tabId;
+				};
+
+				arrayTabList.forEach((el, index) => {
+					el.addEventListener('click', () => {
+						arrayTabList.forEach((e) => {
+							if (e.classList.contains('active')) {
+								e.classList.remove('active');
+							}
+						});
+						el.classList.add('active');
+						setStyleForInkBar({
+							left: tabList[index].offsetLeft,
+							width: tabList[index].getBoundingClientRect().width,
+						});
+						onTabChange(id, index, el.textContent);
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

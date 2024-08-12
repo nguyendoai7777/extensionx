@@ -1,0 +1,70 @@
+@keyframes z00m2 {
+	0% {
+		transform: scale(1);
+	}
+	12.5% {
+		transform: scale(1.05);
+	}
+	25% {
+		transform: scale(1);
+	}
+	37.5% {
+		transform: scale(1.05);
+	}
+	50% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes z00m {
+	0% {
+		transform: scale(1);
+	}
+	12.5% {
+		transform: scale(1);
+	}
+	25% {
+		transform: scale(1.05);
+	}
+	37.5% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+@keyframes shaking {
+	0% {
+		transform: rotate(0);
+	}
+	15% {
+		transform: rotate(5deg);
+	}
+	30% {
+		transform: rotate(-5deg);
+	}
+	45% {
+		transform: rotate(4deg);
+	}
+	60% {
+		transform: rotate(-4deg);
+	}
+	75% {
+		transform: rotate(0deg);
+	}
+	85% {
+		transform: rotate(0deg);
+	}
+	92% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(0);
+	}
+}

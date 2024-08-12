@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style lang="css">
+			/* refer: https://www.youtube.com/watch?v=bnlhCaIU8O8  */
+			* {
+				margin: 0;
+				box-sizing: border-box;
+				font-family: Arial, Helvetica, sans-serif;
+			}
+
+			body {
+				height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background-color: #000;
+			}
+
+			.decorator {
+				position: relative;
+				width: 400px;
+				height: 400px;
+				background: repeating-conic-gradient(from var(--animateProps), deeppink 0%, rgb(20, 75, 255) 5%, cyan 10%, transparent 15%, transparent 40%, deeppink 50%);
+				border-radius: 10px;
+				animation: rt 3s infinite linear;
+			}
+
+			.decorator:after {
+				content: '';
+				display: block;
+				width: 100%;
+				height: 100%;
+				background: repeating-conic-gradient(from var(--animateProps), deeppink 0%, rgb(20, 75, 255) 5%, cyan 10%, transparent 15%, transparent 40%, deeppink 50%);
+				border-radius: 10px;
+				animation: rt 3s infinite linear;
+				animation-delay: 0.75s;
+			}
+
+			.decorator .inner {
+				position: absolute;
+				inset: 4px;
+				background-color: #000;
+				border-radius: 8px;
+			}
+
+			@property --animateProps {
+				syntax: '<angle>';
+				inherits: false;
+				initial-value: 0deg;
+			}
+
+			@keyframes rt {
+				0% {
+					--animateProps: 0deg;
+				}
+
+				100% {
+					--animateProps: 360deg;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="decorator">
+			<div class="inner"></div>
+		</div>
+
+		<!--
+    /* scss */
+    
+    /* refer: https://www.youtube.com/watch?v=bnlhCaIU8O8  */
+
+    * {
+      margin: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000;
+    }
+
+    .decorator {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      background: repeating-conic-gradient(
+        from var(--animateProps),
+        deeppink 0%,
+        rgb(20, 75, 255) 5%,
+        cyan 10%,
+        transparent 15%,
+        transparent 40%,
+        deeppink 50%
+      );
+      border-radius: 10px;
+      animation: rt 3s infinite linear;
+      &:after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: repeating-conic-gradient(
+          from var(--animateProps),
+          deeppink 0%,
+          rgb(20, 75, 255) 5%,
+          cyan 10%,
+          transparent 15%,
+          transparent 40%,
+          deeppink 50%
+        );
+        border-radius: 10px;
+        animation: rt 3s infinite linear;
+        animation-delay: .75s;
+      }
+      .inner {
+        position: absolute;
+        inset: 4px;
+        background-color: #000;
+        border-radius: 8px;
+      }
+    }
+
+    @property --animateProps {
+      syntax: '<angle>';
+      inherits: false;
+      initial-value: 0deg;
+    }
+
+    @keyframes rt {
+      0% {
+        --animateProps: 0deg;
+      }
+      100% {
+        --animateProps: 360deg;
+      }
+    }
+
+
+    -->
+	</body>
+</html>

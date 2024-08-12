@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			html {
+				height: 100%;
+				background: #223;
+			}
+			body {
+				height: calc(100svh);
+			}
+
+			* {
+				color: #fff;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			@keyframes bg-spin {
+				to {
+					--border-angle: 1turn;
+				}
+			}
+			@property --border-angle {
+				syntax: '<angle>';
+				inherits: true;
+				initial-value: 0turn;
+			}
+
+			.box {
+				display: grid;
+				place-items: center;
+
+				color: white;
+				text-shadow: 0 1px 0 #000;
+
+				--border-angle: 0turn;
+				--main-bg: conic-gradient(from var(--border-angle), #213 5%, #112 60%, #213 95%);
+
+				border: solid 5px transparent;
+				border-radius: 18px;
+				--gradient-border: conic-gradient(from var(--border-angle), transparent 60%, #08f, #f03 99%, transparent);
+
+				background: var(--main-bg) padding-box, var(--gradient-border) border-box, var(--main-bg) border-box;
+
+				background-position: center center;
+
+				animation: bg-spin 3s linear infinite;
+
+				/* &:hover {
+        animation-play-state: paused;
+      } */
+			}
+		</style>
+	</head>
+
+	<body class="box">
+		<div>content inside</div>
+	</body>
+</html>

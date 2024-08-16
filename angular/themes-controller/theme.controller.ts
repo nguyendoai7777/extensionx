@@ -19,9 +19,7 @@ export function useSystemThemeContext(): SystemThemeContext {
     matchMedia('(prefers-color-scheme: dark)').addEventListener(
       'change',
       (event) => {
-        const newColorScheme = event.matches
-          ? 'dark'
-          : ('light' as SystemTheme);
+        const newColorScheme = event.matches ? 'dark' : 'light';
         theme(newColorScheme);
       },
     );

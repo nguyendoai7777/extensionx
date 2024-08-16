@@ -12,6 +12,25 @@ interface SystemThemeContext {
   listenThemeChange: (changes: ThemeChangeCallback) => void;
 }
 
+/**
+ *
+ * @example
+ * ```ts
+ * Component({...})
+ * export class ExampleComponent {
+ *   systemTheme = useSystemThemeContext();
+ *
+ *   ngOnInit() {
+ *     const { isDarkMode, listenThemeChange } = systemTheme;
+ *     listenThemeChange((theme) => {
+ *       console.log(`{} current theme: `, theme);
+ *     });
+ *   }
+ * }
+ * ```
+ * ---
+ * >>
+ */
 export function useSystemThemeContext(): SystemThemeContext {
   const isDarkMode = matchMedia('(prefers-color-scheme: dark)').matches;
 

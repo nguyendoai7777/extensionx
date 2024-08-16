@@ -1,26 +1,36 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  ElementRef,
-  Renderer2,
-  assertInInjectionContext,
-  inject,
-} from '@angular/core';
+import { Renderer2, inject } from '@angular/core';
 
 interface ThemeConText {
-  defaultTheme: string;
+  defaultTheme: string | null;
   bindingAttrName: string;
   appendTo: string;
 }
 
 type CustomThemeConfig = Partial<ThemeConText>;
 
-interface CustomTheme {
-  set: (theme: string) => void;
-}
-
-export function useCustomThemeContext(
-  config?: Partial<CustomThemeConfig>,
-): CustomTheme {
+/**
+ *
+ * @example
+ * ```ts
+ * Component({...})
+ * export class ExampleComponent {
+ *   setTheme = useCustomThemeContext({
+ *     defaultTheme: localStorage.getItem('theme'),
+ *     appendTo: 'body',
+ *     bindingAttrName: 'app-theme',
+ *   });
+ * }
+ * ```
+ * ---
+ * >>
+ *
+ * ```html
+ * <div (click)="setTheme('pink')">Set Pink</div>
+ * <div (click)="setTheme('purple')">Set Purple</div>
+ * ```
+ */
+export function useCustomThemeContext(config?: Partial<CustomThemeConfig>) {
   const doc = inject(DOCUMENT);
   const rd2 = inject(Renderer2);
   const setTheme = (theme: string) => {
@@ -33,9 +43,7 @@ export function useCustomThemeContext(
   if (config?.defaultTheme) {
     setTheme(config.defaultTheme);
   }
-  return {
-    set: (theme) => {
-      setTheme(theme);
-    },
+  return (theme: string) => {
+    setTheme(theme);
   };
 }

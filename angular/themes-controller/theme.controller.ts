@@ -5,10 +5,17 @@ const SystemThemeMode = {
 
 type SystemTheme = keyof typeof SystemThemeMode;
 
-export function useSystemThemeContext() {
+type ThemeChangeCallback = (theme: SystemTheme) => void;
+
+interface SystemThemeContext {
+  isDarkMode: boolean;
+  listenThemeChange: (changes: ThemeChangeCallback) => void;
+}
+
+export function useSystemThemeContext(): SystemThemeContext {
   const isDarkMode = matchMedia('(prefers-color-scheme: dark)').matches;
 
-  function listenChange(theme: (theme: SystemTheme) => void) {
+  function listenChange(theme: ThemeChangeCallback) {
     matchMedia('(prefers-color-scheme: dark)').addEventListener(
       'change',
       (event) => {
@@ -22,7 +29,7 @@ export function useSystemThemeContext() {
 
   return {
     isDarkMode,
-    listenThemeChange: (onSystemChange: (theme: SystemTheme) => void) => {
+    listenThemeChange: (onSystemChange) => {
       listenChange(onSystemChange);
     },
   };

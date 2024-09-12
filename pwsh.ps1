@@ -1,4 +1,5 @@
-
+## vscode
+## 	"terminal.external.windowsExec": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -WorkingDirectory ~",
 function which($name) { 
   Get-Command $name | Select-Object -ExpandProperty Definition 
 }

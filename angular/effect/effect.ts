@@ -21,20 +21,20 @@ import { DestroyRef, effect, inject, Signal } from '@angular/core';
  * */
 
 export function useEffect<T>(
-  callback: () => (() => void),
-  deps: Signal<T>[],
+	callback: () => (() => void) | void,
+	deps: Signal<T>[],
 ) {
-  const destroyRef = inject(DestroyRef);
-  let cleanupFn: (() => void);
-  const stopEffect = effect(() => {
-    cleanupFn = callback();
-    for (const dep of deps) {
-      dep();
-    }
-  });
+	const destroyRef = inject(DestroyRef);
+	let cleanupFn: (() => void) | void;
+	const stopEffect = effect(() => {
+		cleanupFn = callback();
+		for (const dep of deps) {
+			dep();
+		}
+	});
 
-  destroyRef.onDestroy(() => {
-    stopEffect.destroy();
-    cleanupFn();
-  });
+	destroyRef.onDestroy(() => {
+		cleanupFn?.();
+		stopEffect.destroy();
+	});
 }

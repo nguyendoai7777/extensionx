@@ -1,8 +1,25 @@
 ## vscode
 ## 	"terminal.external.windowsExec": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -WorkingDirectory ~",
+
+## Theme
+## oh-my-posh init pwsh --config "~\uew.omp.json" | Invoke-Expression
+## Set-PSReadLineOption -PredictionViewStyle ListView
+
 function which($name) { 
   Get-Command $name | Select-Object -ExpandProperty Definition 
 }
+
+#############################################
+#################### GET WIFI ####################
+
+function wfl { 
+  netsh wlan show profiles
+}
+
+function wfp($name) {
+  (netsh wlan show profile name=$name key=clear) | Select-String -Pattern "Key Content"
+}
+
 #############################################
 #################### BUN ####################
 function bi { 

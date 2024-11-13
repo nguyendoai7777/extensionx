@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<div style="position: relative">
+			<canvas id="donutChart" width="400" height="400"></canvas>
+			<div
+				id="tooltip"
+				style="
+					position: absolute;
+					background: rgba(0, 0, 0, 0.7);
+					color: white;
+					padding: 8px 12px;
+					border-radius: 6px;
+					font-size: 14px;
+					pointer-events: none;
+					opacity: 0;
+					transform: translate(-50%, 0);
+					transition: all 0.15s ease-in-out;
+					z-index: 100;
+					font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+				"
+			>
+				<div id="tooltipContent"></div>
+			</div>
+		</div>
+		<button onclick="reinitChart([35, 15, 10, 20, 20])">Re-init với data mới</button>
+
+		<script>
+			let canvas, ctx, centerX, centerY, radius, innerRadius;
+			let data, colors, cumulativeData;
+			let animationFrame = null;
+			let tooltipEl;
+			let currentHoverIndex = -1;
+			let tooltipTimeout = null;
+			const ANIMATION_DURATION = 750;
+
+			function setupCanvas(canvasId) {
+				canvas = document.getElementById(canvasId);
+				ctx = canvas.getContext('2d');
+				centerX = canvas.width / 2;
+				centerY = canvas.height / 2;
+				radius = Math.min(centerX, centerY) * 0.8;
+				innerRadius = radius * 0.6;
+				tooltipEl = document.getElementById('tooltip');
+
+				canvas.addEventListener('mousemove', handleHover);
+				canvas.addEventListener('mouseleave', handleMouseLeave);
+			}
+
+			function calculateCumulativeData(chartData) {
+				const total = chartData.reduce((a, b) => a + b, 0);
+				const result = [];
+				let sum = 0;
+
+				chartData.forEach((value) => {
+					result.push({
+						start: (sum * (2 * Math.PI)) / total,
+						end: ((sum + value) * (2 * Math.PI)) / total,
+						value: value,
+						percentage: ((value / total) * 100).toFixed(1),
+					});
+					sum += value;
+				});
+
+				return result;
+			}
+
+			function easeOutCubic(x) {
+				return 1 - Math.pow(1 - x, 3);
+			}
+
+			function drawDonut(progress) {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				cumulativeData.forEach((segment, index) => {
+					ctx.beginPath();
+
+					const startAngle = -Math.PI / 2;
+					const segmentProgress = easeOutCubic(progress);
+					const currentStart = startAngle + segment.start * segmentProgress;
+					const currentEnd = startAngle + segment.end * segmentProgress;
+
+					ctx.arc(centerX, centerY, radius, currentStart, currentEnd);
+					ctx.arc(centerX, centerY, innerRadius, currentEnd, currentStart, true);
+
+					ctx.closePath();
+
+					if (index === currentHoverIndex) {
+						ctx.fillStyle = lightenColor(colors[index % colors.length], 20);
+					} else {
+						ctx.fillStyle = colors[index % colors.length];
+					}
+
+					ctx.fill();
+				});
+			}
+
+			function calculateAngle(x, y) {
+				let angle = Math.atan2(y - centerY, x - centerX);
+				angle = angle < 0 ? angle + 2 * Math.PI : angle;
+				angle = (angle + Math.PI / 2) % (2 * Math.PI);
+				return angle;
+			}
+
+			function calculateDistance(x, y) {
+				const dx = x - centerX;
+				const dy = y - centerY;
+				return Math.sqrt(dx * dx + dy * dy);
+			}
+
+			function lightenColor(color, percent) {
+				const num = parseInt(color.replace('#', ''), 16),
+					amt = Math.round(2.55 * percent),
+					R = (num >> 16) + amt,
+					G = ((num >> 8) & 0x00ff) + amt,
+					B = (num & 0x0000ff) + amt;
+				return (
+					'#' + (0x1000000 + (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 + (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 + (B < 255 ? (B < 1 ? 0 : B) : 255)).toString(16).slice(1)
+				);
+			}
+
+			function positionTooltip(x, y) {
+				const rect = canvas.getBoundingClientRect();
+				const canvasTop = rect.top + window.scrollY;
+				const canvasLeft = rect.left + window.scrollX;
+
+				// Tính toán vị trí tooltip
+				let tooltipX = canvasLeft + x;
+				let tooltipY = canvasTop + y - 5; // Offset 5px để tooltip không che điểm hover
+
+				// Đảm bảo tooltip không vượt ra ngoài màn hình
+				tooltipEl.style.transform = 'translate(-50%, -100%)';
+				tooltipEl.style.left = `${tooltipX}px`;
+				tooltipEl.style.top = `${tooltipY}px`;
+			}
+
+			function showTooltip(x, y, content) {
+				// Clear timeout nếu đang có
+				if (tooltipTimeout) {
+					clearTimeout(tooltipTimeout);
+					tooltipTimeout = null;
+				}
+
+				// Cập nhật nội dung và vị trí
+				document.getElementById('tooltipContent').innerHTML = content;
+				positionTooltip(x, y);
+
+				// Hiển thị tooltip với animation
+				tooltipEl.style.opacity = '1';
+				tooltipEl.style.transform = 'translate(-50%, -100%)';
+			}
+
+			function hideTooltip() {
+				// Ẩn tooltip với animation
+				tooltipEl.style.opacity = '0';
+				tooltipTimeout = setTimeout(() => {
+					tooltipEl.style.transform = 'translate(-50%, 0)';
+				}, 150);
+			}
+
+			function handleHover(event) {
+				const rect = canvas.getBoundingClientRect();
+				const x = event.clientX - rect.left;
+				const y = event.clientY - rect.top;
+
+				const distance = calculateDistance(x, y);
+
+				if (distance >= innerRadius && distance <= radius) {
+					const angle = calculateAngle(x, y);
+
+					const hoverIndex = cumulativeData.findIndex((segment) => {
+						return angle >= segment.start && angle <= segment.end;
+					});
+
+					if (hoverIndex !== -1) {
+						const segment = cumulativeData[hoverIndex];
+						const content = `
+            <div style="margin-bottom: 4px; color: ${colors[hoverIndex % colors.length]}">●</div>
+            <div>Giá trị: ${segment.value}</div>
+            <div>Phần trăm: ${segment.percentage}%</div>
+          `;
+
+						showTooltip(x, y, content);
+
+						if (hoverIndex !== currentHoverIndex) {
+							currentHoverIndex = hoverIndex;
+							drawDonut(1);
+						}
+					}
+				} else {
+					handleMouseLeave();
+				}
+			}
+
+			function handleMouseLeave() {
+				if (currentHoverIndex !== -1) {
+					currentHoverIndex = -1;
+					drawDonut(1);
+				}
+				hideTooltip();
+			}
+
+			function startAnimation() {
+				const startTime = performance.now();
+
+				function animate(currentTime) {
+					const elapsed = currentTime - startTime;
+					let progress = elapsed / ANIMATION_DURATION;
+
+					if (progress > 1) progress = 1;
+
+					drawDonut(progress);
+
+					if (progress < 1) {
+						animationFrame = requestAnimationFrame(animate);
+					}
+				}
+
+				animationFrame = requestAnimationFrame(animate);
+			}
+
+			function initChart(canvasId, chartData, chartColors) {
+				if (!canvas) {
+					setupCanvas(canvasId);
+				}
+
+				if (animationFrame) {
+					cancelAnimationFrame(animationFrame);
+				}
+
+				data = chartData;
+				colors = chartColors || ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+				cumulativeData = calculateCumulativeData(data);
+				startAnimation();
+			}
+
+			function reinitChart(newData, newColors) {
+				initChart('donutChart', newData, newColors || colors);
+			}
+
+			initChart('donutChart', [20, 15, 25, 10, 30]);
+		</script>
+	</body>
+</html>

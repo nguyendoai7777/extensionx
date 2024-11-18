@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Theme Switcher</title>
+		<style>
+			:root {
+				--bg-light: #ffffff;
+				--text-light: #ffffff;
+				--bg-dark: #141414;
+				--text-dark: #000000;
+				--transition-duration: 0.7s;
+			}
+
+			body {
+				margin: 0;
+				min-height: 100vh;
+				background-color: var(--bg-light);
+				color: var(--text-light);
+				transition: color var(--transition-duration);
+				position: relative;
+				overflow-x: hidden;
+			}
+
+			.content {
+				padding: 20px;
+			}
+
+			.theme-switcher {
+				border: 1px solid currentColor;
+				color: inherit;
+				border-radius: 4px;
+			}
+
+			.theme-circle {
+				position: fixed;
+				width: 0;
+				height: 0;
+				border-radius: 50%;
+				background-color: var(--bg-dark);
+				transform: translate(-50%, -50%);
+				transition: width var(--transition-duration), height var(--transition-duration);
+				pointer-events: none;
+			}
+
+			/* Dark theme styles */
+			html {
+				.light {
+					color: var(--text-dark);
+          --bg-all: var(--text-light);
+          --text-all: var(--text-dark)
+				}
+				.dark {
+					color: var(--text-light);
+          --bg-all: var(--text-dark);
+          --text-all: var(--text-light)
+				}
+        button {
+          background-color: var(--bg-all);
+          color: var(--text-all)
+        }
+			}
+
+			/* Content within the circle should use dark theme colors */
+			.theme-circle ~ * {
+				position: relative;
+				z-index: 2;
+				mix-blend-mode: difference;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="theme-circle"></div>
+		<button class="theme-switcher">Toggle Theme</button>
+
+		<div class="content">
+			<h1>Theme Switcher Demo</h1>
+			<p>Click the button in the top-right corner to toggle between light and dark themes.</p>
+			<!-- Add more content here -->
+		</div>
+
+		<script>
+			const body = document.body;
+			const themeCircle = document.querySelector('.theme-circle');
+			const themeSwitch = document.querySelector('.theme-switcher');
+			let isDark = false;
+
+			function calculateCircleSize() {
+				// Calculate the size needed to cover the entire viewport
+				const viewportWidth = window.innerWidth;
+				const viewportHeight = window.innerHeight;
+				// Use Pythagorean theorem to ensure circle covers screen from any corner
+				return Math.sqrt(Math.pow(viewportWidth, 2) + Math.pow(viewportHeight, 2)) * 2;
+			}
+
+			function updateThemeCircle(event) {
+				const circleSize = calculateCircleSize();
+
+				// If event is provided, use click position, otherwise use screen center
+				const x = event ? event.clientX : window.innerWidth / 2;
+				const y = event ? event.clientY : window.innerHeight / 2;
+
+				themeCircle.style.left = `${x}px`;
+				themeCircle.style.top = `${y}px`;
+
+				if (!isDark) {
+					// Expand circle
+					themeCircle.style.width = `${circleSize}px`;
+					themeCircle.style.height = `${circleSize}px`;
+				} else {
+					// Contract circle
+					themeCircle.style.width = '0';
+					themeCircle.style.height = '0';
+				}
+
+				isDark = !isDark;
+				body.classList.toggle('dark');
+			}
+
+			// Handle click event
+			themeSwitch.addEventListener('click', updateThemeCircle);
+
+			// Handle window resize
+			window.addEventListener('resize', () => {
+				if (isDark) {
+					updateThemeCircle();
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,67 @@
+switch {
+  --size-w-md: 28px;
+  --size-h-md: 16px;
+  --space-md: 2px;
+  --size-w-lg: 48px;
+  --size-h-lg: 28px;
+  --space-lg: 4px;
+  display: flex;
+  width: fit-content;
+  > button {
+    display: block;
+    border-radius: 9999px;
+    transition: var(--base-transition);
+    &:focus-visible {
+      outline: 2px solid #fff;
+    }
+    .switch-point {
+      --point-size-md: 12px;
+      --point-size-lg: 20px;
+      border-radius: 9999px;
+      background: #fff;
+      transition: transform var(--base-transition) cubic-bezier(0.4, 0, 0.2, 1);
+      &.md {
+        width: var(--point-size-md);
+        height: var(--point-size-md);
+      }
+      &.lg {
+        width: var(--point-size-lg);
+        height: var(--point-size-lg);
+      }
+    }
+    &.checked {
+      &:not([disabled]) {
+        background: var(--control-switch-active-color);
+      }
+      &[disabled] {
+        background: var(--control-switch-active-disabled-color);
+      }
+      .switch-point {
+        &.md {
+          transform: translateX(12px);
+        }
+        &.lg {
+          transform: translateX(20px);
+        }
+      }
+    }
+    &.unchecked {
+      &:not([disabled]) {
+        background: var(--control-switch-inactive-color);
+      }
+      &[disabled] {
+        background: var(--control-switch-inactive-disabled-color);
+      }
+    }
+  }
+  &.md button {
+    width: var(--size-w-md);
+    height: var(--size-h-md);
+    padding: var(--space-md);
+  }
+  &.lg button {
+    width: var(--size-w-lg);
+    height: var(--size-h-lg);
+    padding: var(--space-lg);
+  }
+}

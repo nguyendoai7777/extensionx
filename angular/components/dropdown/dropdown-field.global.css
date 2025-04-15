@@ -1,0 +1,30 @@
+
+.cs-svg-icon {
+  fill: var(--svg-icon-src-fill)
+}
+.cdk-dialog-container, .cdk-keyboard-focused {
+  outline: none;
+}
+
+.form-field-root {
+  border: 1px solid var(--control-border-color);
+  &.cdk-keyboard-focused {
+    box-shadow: 0 0 2px 1px #71ccf3;
+  }
+  &.cdk-focused {
+    &:not(.opened):not([disabled]) {
+      border-color: #71ccf3;
+    }
+  }
+  &[disabled] {
+    background-color: oklch(0.67 0 0 / .2);
+    cursor: default;
+  }
+}
+
+.ConfigSize {
+  &.lg {
+    --control-rounded-size: 10px;
+    --control-dropdown-content-indent: 12px;
+  }
+}

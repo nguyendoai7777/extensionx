@@ -1,0 +1,58 @@
+<div
+  class="dropdown-controller ConfigSize"
+  [ngClass]="{
+ 'text-gray-2': _disabled(),
+  }"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  #triggerElement
+  (click)="openPanel($event)"
+>
+
+  <input
+    #search
+    class="TrapEnter"
+    [disabled]="_disabled()"
+    [placeholder]="selectedValue() || multiple() && chipList.children.length ? '' : placeholder()"
+    [class.PreventCloseOption]="search.value.length"
+    (input)="onSearchChange($event)"
+  >
+  <div
+    #chipList
+    class="ChipPlaceholder py-1 flex gap-1 flex-1 overflow-x-auto no-scrollbar"
+    style="z-index: 3"
+    [ngStyle]="{
+      opacity: search.value.length ? 0 : 1,
+      display: !multiple() && 'none'
+    }">
+    <ng-content select="dropdown-chip-remove" />
+  </div>
+  @if (!multiple() && selectedValue()) {
+    <div
+      class="flex justify-start w-full overflow-x-hidden line-clamp-1 panel-item-spacing"
+      [ngStyle]="{opacity: search.value.length ? 0 : 1 }"
+      [innerHTML]="selectedValue()!.label"></div>
+  }
+  <svg class="pseudo-icon" [class.rotate-180]="isOpen()">
+    <use href="assets/svg/icons-button.svg#ArrowDown"></use>
+  </svg>
+</div>
+<ng-template
+  cdkConnectedOverlay
+  cdkConnectedOverlayFlexibleDimensions
+  [cdkConnectedOverlayOpen]="isOpen()"
+  [cdkConnectedOverlayLockPosition]="true"
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+  (overlayOutsideClick)="overlayOutsideClick($event)"
+>
+  <div class="dropdown-panel">
+    <div
+      #panelListTemplate
+      [ngStyle]="{ 'width.px': triggerElement.offsetWidth }"
+      class="dropdown-panel-list gap-[1px] !overflow-y-auto ConfigSize shadow-[0_0_16px_rgba(0,0,0,0.1)] animate-in fade-in {{fieldSize()}}"
+    >
+      <ng-content />
+    </div>
+  </div>
+</ng-template>

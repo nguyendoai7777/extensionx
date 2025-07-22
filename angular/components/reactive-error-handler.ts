@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, input, output, ViewEncapsulation } from '@angular/core';
+import { Component, computed, input, ViewEncapsulation } from '@angular/core';
 import { FormControl, ValidationErrors } from '@angular/forms';
 
 const DEFAULT_ERROR_DECLARE = {
@@ -33,7 +33,7 @@ function mergeObjectValues(obj1: Record<string, any>, obj2: Record<string, any>)
   imports: [],
 })
 export class FieldErrorComponent {
-  private readonly elr = inject<ElementRef<HTMLElement>>(ElementRef);
+  // private readonly elr = inject<ElementRef<HTMLElement>>(ElementRef);
   readonly control = input.required<FormControl>();
   /**
    * passing controls as
@@ -44,8 +44,6 @@ export class FieldErrorComponent {
    * ```
    * */
   readonly errors = input.required<ValidationErrors | null>();
-  readonly asyncErrorKey = input<string>();
-  readonly value = output<any>();
   /*protected readonly extractAsyncError = computed<ReactiveAsyncError<number> | undefined>(() => {
     if (this.asyncErrorKey() && this.errors()?.[this.asyncErrorKey()!]) {
       return {
@@ -79,18 +77,18 @@ export class FieldErrorComponent {
    *
    * */
   readonly errorMap = input<Record<string, string> | null | undefined>(DEFAULT_ERROR_DECLARE);
-  readonly mergedErrorsMap = computed(() => {
+  private readonly mergedErrorsMap = computed(() => {
     const error = this.errorMap() ?? {};
     return mergeObjectValues(DEFAULT_ERROR_DECLARE, error);
   });
 
-  readonly error = computed(() => {
+  protected readonly error = computed(() => {
     if (!this.errors()) {
       return void 0;
     }
     const current = Object.keys(this.errors() as Record<string, any>);
     const error = this.mergedErrorsMap()![current[0]] ?? this.errors()?.['message'] ?? '';
-    this.elr.nativeElement.setAttribute('has-error', String(error.length > 0));
+    // this.elr.nativeElement.setAttribute('has-error', String(error.length > 0));
     return error;
   });
 }

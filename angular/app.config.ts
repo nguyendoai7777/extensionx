@@ -1,3 +1,8 @@
+/**
+ * AppInitConfig is interface for fetch config.json from public/config.json use instead for environments folder (build mistake)
+ *
+ */
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAppInitializer(() => {

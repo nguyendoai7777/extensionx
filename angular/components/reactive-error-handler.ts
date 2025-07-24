@@ -92,3 +92,18 @@ export class FieldErrorComponent {
     return error;
   });
 }
+
+// use with nz
+/**
+ * ```html
+ *  <nz-form-control [nzErrorTip]="nzFieldError(form.controls.name, errorMap)">...</nz-form-control>
+ * ```
+ */
+export const nzFieldError = (formControl: FormControl, errorsMap?: Record<string, string>) => {
+  const errorsMapped = errorsMap ?? {},
+    mergedErrorsMap = mergeObjectValues(DEFAULT_ERROR_DECLARE, errorsMapped),
+    current = Object.keys((formControl.errors as Record<any, any>) ?? {}),
+    error = mergedErrorsMap[current[0]] ?? formControl.errors?.['message'] ?? '';
+  return formControl.touched || formControl.dirty ? error : '';
+};
+

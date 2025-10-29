@@ -40,37 +40,26 @@ function pws {
   param(
     [Parameter(Position = 0)]
     [ValidateSet('update')]
-    [string]$Action = 'update',
+    [string]$Action = 'update'
 
-    [switch]$Force,  # flag -f
-    [switch]$f       # flag viết tắt -f (cho tiện)
   )
 
   if ($Action -eq 'update') {
     Write-Host "⏬ Updating PowerShell..." -ForegroundColor Cyan
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-    $useFallback = $Force -or $f
-
-    if (-not $useFallback) {
-      if (Get-Command winget -ErrorAction SilentlyContinue) {
-        winget upgrade --id Microsoft.PowerShell --source winget --accept-source-agreements --accept-package-agreements
-        return
-      }
-      elseif (Get-Command choco -ErrorAction SilentlyContinue) {
-        choco upgrade powershell-core -y
-        return
-      }
-      else {
-        Write-Host "⚠️  No 'winget' or 'choco' found, falling back to GitHub MSI download..." -ForegroundColor Yellow
-      }
-    }
-    else {
-      Write-Host "🔧 Force flag detected: downloading directly from GitHub..." -ForegroundColor Yellow
-    }
 
     try {
+      # --- Lấy bản mới nhất từ GitHub ---
       $latest = (Invoke-RestMethod https://api.github.com/repos/PowerShell/PowerShell/releases/latest).tag_name
       $ver = $latest.TrimStart('v')
+      $current = $PSVersionTable.PSVersion.ToString()
+
+      if ($current -eq $ver) {
+        Write-Host "✅ You already have the latest PowerShell version ($ver). Up-to-date!" -ForegroundColor Green
+        return
+      }
+
       $url = "https://github.com/PowerShell/PowerShell/releases/download/$latest/PowerShell-$ver-win-x64.msi"
       $installer = "$env:TEMP\PowerShell-$ver-win-x64.msi"
 
@@ -78,10 +67,16 @@ function pws {
       Invoke-WebRequest -Uri $url -OutFile $installer -UseBasicParsing
 
       Write-Host "⚙️  Installing PowerShell $ver ..." -ForegroundColor Cyan
-      Start-Process msiexec.exe -ArgumentList "/i `"$installer`" /quiet /norestart" -Wait
+      $process = Start-Process msiexec.exe -Verb RunAs -ArgumentList "/i `"$installer`" /quiet /norestart" -PassThru
+      Write-Host "⏳ Waiting for installation to complete..." -ForegroundColor Yellow
+      $process.WaitForExit()
 
-      Write-Host "✅ PowerShell $ver installed successfully!" -ForegroundColor Green
-      Write-Host "🔁 Please restart PowerShell to use the new version." -ForegroundColor Cyan
+      if ($process.ExitCode -eq 0) {
+        Write-Host "✅ Installation completed successfully." -ForegroundColor Green
+        Write-Host "🪄 Restart PowerShell to use version $ver." -ForegroundColor Cyan
+      }
+      return
+  
     }
     catch {
       Write-Host "❌ Update failed: $_" -ForegroundColor Red
@@ -89,6 +84,48 @@ function pws {
   }
 }
 
+function update {
+  [CmdletBinding()]
+  param(
+    [Parameter(Position = 0, Mandatory = $true)]
+    [ValidateSet('pwsh', 'npm', 'pnpm')]
+    [string]$Target
+  )
+
+  switch ($Target) {
+    'pwsh' {
+      if (Get-Command pws -ErrorAction SilentlyContinue) {
+        pws update
+      }
+      else {
+        Write-Host "❌ 'pws' function not found. Make sure it is defined in your profile." -ForegroundColor Red
+      }
+    }
+
+    'npm' {
+      Write-Host "📦 Updating npm..." -ForegroundColor Cyan
+      try {
+        npm install -g npm
+        Write-Host "✅ npm updated successfully." -ForegroundColor Green
+        npm -v | ForEach-Object { Write-Host "🔹 Current npm version: $_" -ForegroundColor Yellow }
+      }
+      catch {
+        Write-Host "❌ npm update failed: $_" -ForegroundColor Red
+      }
+    }
+    'pnpm' {
+      Write-Host "📦 Updating pnpm..." -ForegroundColor Cyan
+      try {
+        pnpm self-update
+      }
+      catch {
+        Write-Host "❌ pnpm update failed: $_" -ForegroundColor Red
+      }
+    }
+
+
+  }
+}
 ############################################# 
 
 #################### BUN #################### 

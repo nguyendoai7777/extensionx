@@ -14,7 +14,7 @@ import { readFileSync } from 'fs';
  * 
  * */
 
-function resolvePaths() {
+function resolvePathsAlias() {
   const tsConfigRaw = (readFileSync('./tsconfig.json', 'utf-8'));
   const cleanedTsConfig = tsConfigRaw.replace(/\/\/.*$/gm, '') // removed comment with format /* ... */
     .replace(/\/\*[\s\S]*?\*\//g, '');

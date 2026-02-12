@@ -1,5 +1,5 @@
 import useThemeAnimation from "./theme-switcher.hook.ts";
-import './index.css';
+import './theme-switcher.css';
 
 export default function App() {
   const {toggleAnimationTheme, theme} = useThemeAnimation()

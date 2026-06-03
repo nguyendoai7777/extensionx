@@ -1,0 +1,484 @@
+<style>
+  .register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1.5rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Card base */
+.register-card,
+.success-card {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card Header */
+.card-header {
+  margin-bottom: 2.2rem;
+  text-align: center;
+}
+
+.card-header h2 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Form Styles */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  letter-spacing: 0.025em;
+  transition: color 0.2s ease;
+}
+
+.form-group input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.form-group input::placeholder {
+  color: #475569;
+}
+
+.form-group input:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.form-group input:focus {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+/* Invalid & Touched State styling */
+.form-group.has-error label {
+  color: #f87171;
+}
+
+.form-group.has-error input {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.02);
+}
+
+.form-group.has-error input:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
+
+/* Error Message rendering */
+.error-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.1rem;
+  animation: slideDown 0.2s ease forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.error-icon {
+  font-size: 0.5rem;
+  color: #ef4444;
+}
+
+.error-text {
+  font-size: 0.8rem;
+  color: #f87171;
+  line-height: 1.25;
+}
+
+/* Submit Button */
+.submit-btn {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
+  filter: brightness(1.08);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  color: #475569;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Loading spinner */
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success Card */
+.success-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon-wrapper {
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 50%;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-svg {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.success-card h2 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  margin: 0 0 0.8rem 0;
+  color: #10b981;
+}
+
+.success-desc {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin: 0 0 2rem 0;
+  line-height: 1.5;
+}
+
+.profile-details {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  width: 100%;
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.detail-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.9rem 2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+</style>
+
+<div class="register-container">
+  @if (submittedData() === null) {
+    <div class="register-card animate-fade-in">
+      <div class="card-header">
+        <h2>Create an Account</h2>
+        <p class="subtitle">Join our developer platform today</p>
+      </div>
+
+      <form [formRoot]="registerForm" class="register-form">
+        <!-- Username -->
+        <div
+          class="form-group"
+          [class.has-error]="registerForm.username().touched() && registerForm.username().invalid()"
+        >
+          <label for="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            [formField]="registerForm.username"
+            placeholder="Username (starts with letter or _)"
+          />
+          @if (registerForm.username().touched() && registerForm.username().invalid()) {
+            <div class="error-list">
+              @for (err of registerForm.username().errors(); track err.kind) {
+                <div class="error-item">
+                  <span class="error-icon">●</span>
+                  <span class="error-text">{{ err.message }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Email -->
+        <div
+          class="form-group"
+          [class.has-error]="registerForm.email().touched() && registerForm.email().invalid()"
+        >
+          <label for="email">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            [formField]="registerForm.email"
+            placeholder="e.g. john@example.com"
+          />
+          @if (registerForm.email().touched() && registerForm.email().invalid()) {
+            <div class="error-list">
+              @for (err of registerForm.email().errors(); track err.kind) {
+                <div class="error-item">
+                  <span class="error-icon">●</span>
+                  <span class="error-text">{{ err.message }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Password -->
+        <div
+          class="form-group"
+          [class.has-error]="registerForm.password().touched() && registerForm.password().invalid()"
+        >
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            [formField]="registerForm.password"
+            placeholder="At least 10 chars, uppercase, lowercase, special"
+          />
+          @if (registerForm.password().touched() && registerForm.password().invalid()) {
+            <div class="error-list">
+              @for (err of registerForm.password().errors(); track err.kind) {
+                <div class="error-item">
+                  <span class="error-icon">●</span>
+                  <span class="error-text">{{ err.message }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Confirm Password -->
+        <div
+          class="form-group"
+          [class.has-error]="
+            registerForm.confirmPassword().touched() && registerForm.confirmPassword().invalid()
+          "
+        >
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            [formField]="registerForm.confirmPassword"
+            placeholder="Re-enter your password"
+          />
+          @if (
+            registerForm.confirmPassword().touched() && registerForm.confirmPassword().invalid()
+          ) {
+            <div class="error-list">
+              @for (err of registerForm.confirmPassword().errors(); track err.kind) {
+                <div class="error-item">
+                  <span class="error-icon">●</span>
+                  <span class="error-text">{{ err.message }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Phone Number -->
+        <div
+          class="form-group"
+          [class.has-error]="
+            registerForm.phoneNumber().touched() && registerForm.phoneNumber().invalid()
+          "
+        >
+          <label for="phoneNumber">Phone Number</label>
+          <input
+            id="phoneNumber"
+            type="text"
+            [formField]="registerForm.phoneNumber"
+            placeholder="Max 10 digits"
+          />
+          @if (registerForm.phoneNumber().touched() && registerForm.phoneNumber().invalid()) {
+            <div class="error-list">
+              @for (err of registerForm.phoneNumber().errors(); track err.kind) {
+                <div class="error-item">
+                  <span class="error-icon">●</span>
+                  <span class="error-text">{{ err.message }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="registerForm().invalid() || registerForm().submitting()"
+        >
+          @if (registerForm().submitting()) {
+            <span class="spinner"></span> Submitting...
+          } @else {
+            Register Account
+          }
+        </button>
+      </form>
+    </div>
+  } @else {
+    <div class="success-card animate-fade-in">
+      <div class="success-icon-wrapper">
+        <svg class="success-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="11" stroke="#10b981" stroke-width="2" />
+          <path
+            d="M7 13L10 16L17 8"
+            stroke="#10b981"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+      <h2>Registration Complete!</h2>
+      <p class="success-desc">Thank you for registering. Below is your profile data:</p>
+
+      <div class="profile-details">
+        <div class="detail-row">
+          <span class="detail-label">Username</span>
+          <span class="detail-value">{{ submittedData().username }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Email</span>
+          <span class="detail-value">{{ submittedData().email }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Phone Number</span>
+          <span class="detail-value">{{ submittedData().phoneNumber }}</span>
+        </div>
+      </div>
+
+      <button class="back-btn" (click)="resetForm()">Back to Registration</button>
+    </div>
+  }
+</div>

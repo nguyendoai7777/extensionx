@@ -1,83 +1,120 @@
 // Place your key bindings in this file to override the defaults
+// Place your key bindings in this file to override the defaults
 [
-    {
-        "key": "alt+s",
-        "command": "workbench.action.files.saveFiles"
-    },
-    {
-      "key": "shift+alt+f",
-      "command": "editor.action.formatDocument",
-      "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
-    },
-    {
-      "key": "ctrl+shift+i",
-      "command": "-editor.action.formatDocument",
-      "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
-    },
-    {
-      "key": "alt+right",
-      "command": "cursorLineEnd"
-    },
-    {
-      "key": "shift+alt+left",
-      "command": "cursorLineStartSelect"
-    },
-    {
-      "key": "shift+alt+right",
-      "command": "cursorLineEndSelect"
-    },
-    {
-      "key": "alt+d",
-      "command": "editor.action.deleteLines",
-      "when": "textInputFocus && !editorReadonly"
-    },
-    {
-      "key": "ctrl+shift+k",
-      "command": "-editor.action.deleteLines",
-      "when": "textInputFocus && !editorReadonly"
-    },
-    {
-      "key": "shift+alt+down",
-      "command": "editor.action.duplicateSelection"
-    },
-    {
-      "key": "alt+left",
-      "command": "cursorHome",
-      "when": "textInputFocus"
-    },
-    {
-      "key": "home",
-      "command": "-cursorHome",
-      "when": "textInputFocus"
-    },
-    {
-      "key": "shift+alt+left",
-      "command": "cursorHomeSelect",
-      "when": "textInputFocus"
-    },
-    {
-      "key": "shift+home",
-      "command": "-cursorHomeSelect",
-      "when": "textInputFocus"
-    },
-    {
-      "key": "alt+right",
-      "command": "cursorEnd",
-      "when": "textInputFocus"
-    },
-    {
-      "key": "end",
-      "command": "-cursorEnd",
-      "when": "textInputFocus"
-    },
-    {
-      "key": "shift+alt+right",
-      "command": "cursorEndSelect",
-      "when": "textInputFocus"
-    },
-    {
-      "key": "shift+end",
-      "command": "-cursorEndSelect",
-      "when": "textInputFocus"
-    }
+	{
+		"key": "alt+s",
+		"command": "workbench.action.files.saveFiles",
+	},
+	{
+		"key": "shift+alt+f",
+		"command": "editor.action.formatDocument",
+		"when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor",
+	},
+	{
+		"key": "ctrl+shift+i",
+		"command": "-editor.action.formatDocument",
+		"when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor",
+	},
+	{
+		"key": "alt+right",
+		"command": "cursorLineEnd",
+	},
+	{
+		"key": "shift+alt+left",
+		"command": "cursorLineStartSelect",
+	},
+	{
+		"key": "shift+alt+right",
+		"command": "cursorLineEndSelect",
+	},
+	{
+		"key": "alt+d",
+		"command": "editor.action.deleteLines",
+		"when": "textInputFocus && !editorReadonly",
+	},
+	{
+		"key": "ctrl+shift+k",
+		"command": "-editor.action.deleteLines",
+		"when": "textInputFocus && !editorReadonly",
+	},
+	{
+		"key": "shift+alt+down",
+		"command": "editor.action.duplicateSelection",
+	},
+	{
+		"key": "alt+left",
+		"command": "cursorHome",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "home",
+		"command": "-cursorHome",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "shift+alt+left",
+		"command": "cursorHomeSelect",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "shift+home",
+		"command": "-cursorHomeSelect",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "alt+right",
+		"command": "cursorEnd",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "end",
+		"command": "-cursorEnd",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "shift+alt+right",
+		"command": "cursorEndSelect",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "shift+end",
+		"command": "-cursorEndSelect",
+		"when": "textInputFocus",
+	},
+	{
+		"key": "ctrl+b",
+		"command": "editor.action.revealDefinition",
+		"when": "editorHasDefinitionProvider && editorTextFocus",
+	},
+	{
+		"key": "f12",
+		"command": "-editor.action.revealDefinition",
+		"when": "editorHasDefinitionProvider && editorTextFocus",
+	},
+	{
+		"key": "ctrl+c",
+		"command": "runCommands",
+		"args": {
+			"commands": [
+				"workbench.action.terminal.copySelection",
+				"workbench.action.terminal.clearSelection", // Lệnh mấu chốt để hủy bôi đen
+			],
+		},
+		"when": "terminalFocus && terminalProcessSupported && terminalTextSelected",
+	},
+
+	// 2. Khi KHÔNG select (hoặc sau khi đã bấm Ctrl+C lần 1 xong): Bấm Ctrl+C sẽ gửi lệnh ngắt
+	{
+		"key": "ctrl+c",
+		"command": "workbench.action.terminal.sendSequence",
+		"args": { "text": "\u0003" },
+		"when": "terminalFocus && terminalProcessSupported && !terminalTextSelected",
+	},
+
+	// 3. Ctrl+V để Paste
+	{
+		"key": "ctrl+v",
+		"command": "workbench.action.terminal.paste",
+		"when": "terminalFocus && terminalProcessSupported",
+	},
 ]

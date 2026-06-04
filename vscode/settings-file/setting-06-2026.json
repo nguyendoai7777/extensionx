@@ -53,8 +53,8 @@
 	"terminal.integrated.defaultProfile.osx": "/bin/zsh",
 	"terminal.integrated.defaultProfile.linux": "zsh",
 	"terminal.integrated.env.windows": { "PATH": "${workspaceFolder}\\node_modules\\.bin;${env:PATH}" }, // hướng dẫn terminal dùng biến cục bộ ngay trong project
-	"terminal.integrated.env.osx": { "PATH": "${workspaceFolder}\\node_modules\\.bin;${env:PATH}" }, // hướng dẫn terminal dùng biến cục bộ ngay trong project
-	"terminal.integrated.env.linux": { "PATH": "${workspaceFolder}\\node_modules\\.bin;${env:PATH}" }, // hướng dẫn terminal dùng biến cục bộ ngay trong project
+	"terminal.integrated.env.osx": { "PATH": "${workspaceFolder}/node_modules/.bin:${env:PATH}" }, // hướng dẫn terminal dùng biến cục bộ ngay trong project
+	"terminal.integrated.env.linux": { "PATH": "${workspaceFolder}/node_modules/.bin:${env:PATH}" }, // hướng dẫn terminal dùng biến cục bộ ngay trong project
 	"html.format.extraLiners": "",
 	"html.format.wrapLineLength": 0,
 	"html.format.indentInnerHtml": true,
